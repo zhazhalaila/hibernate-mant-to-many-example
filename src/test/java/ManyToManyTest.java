@@ -98,4 +98,28 @@ public class ManyToManyTest {
         session.close();
     }
 
+    @Test
+    public void testForRemoveFollowing() {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+        User user3 = (User)session.get(User.class, 3);
+        User user4 = (User)session.get(User.class, 4);
+
+        //user3不再关注user4
+        user3.removeFollowing(user4);
+
+        session.save(user4);
+        tx.commit();
+        session.close();
+
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+        NativeQuery query = session.createSQLQuery("SELECT count(*) FROM user_relations WHERE followed_id=4");
+        List results = query.list();
+        BigInteger count = (BigInteger)results.get(0);
+        assertEquals(count,BigInteger.valueOf(0));
+        tx.commit();
+        session.close();
+    }
 }

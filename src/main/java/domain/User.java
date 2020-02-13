@@ -76,6 +76,7 @@ public class User implements Serializable {
 
     public void removeFollowing(User followed) {
         following.remove(followed);
+        followed.followers.remove(this);
     }
 
     @ManyToMany(mappedBy = "following")
@@ -90,9 +91,5 @@ public class User implements Serializable {
     public void addFollower(User follower) {
         followers.add(follower);
         follower.following.add(this);
-    }
-
-    public void removeFollower(User follower) {
-        followers.remove(follower);
     }
 }
